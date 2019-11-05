@@ -4,6 +4,6 @@ import random
 def ran_partical(n):
     wolfs = []
     for _ in range(n):
-        wolfs.append(-100 + random.random() * 100 * 2)
+        wolfs.append(0.1 + random.random() * 26)
     wolfs = partical(wolfs)
     return wolfs
