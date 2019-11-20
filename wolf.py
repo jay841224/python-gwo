@@ -4,7 +4,7 @@ class partical():
     def __init__(self, A):
         self._A = A
         self._density = 0.1
-        self._lenth = None
+        self._lenth = []
         #位移
         self._u = None
         #應力
@@ -40,9 +40,10 @@ class partical():
         #讀取桿件長度
         with open('Length.txt', 'r') as file:
             lines = file.readlines()
-            self._lenth = lines
+            for line in lines:
+                self._lenth.append(float(line))
 
-        for x, y in self._A, self._lenth:
+        for x, y in zip(self._A, self._lenth):
             x = float(x)
             temp_fit += self._density * x * y + 100 * ((2 - self._u )**2 + (25 - self._strs)**2)
         self._fit = temp_fit

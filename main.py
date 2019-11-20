@@ -3,7 +3,7 @@ import initial, wolf
 #get initial partical
 def main():
     #初始族群
-    number = 30
+    number = 2
     wolfs = initial.ran_partical(number)
     for x, count in zip(wolfs, range(len(wolfs))):
         file = open('partical{}.txt'.format(str(count)), 'w+')

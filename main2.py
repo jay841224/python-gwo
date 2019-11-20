@@ -94,7 +94,7 @@ def update(wolfs):
 
 
 def main():
-    number = 30
+    number = 2
     wolfs = []
     #讀取粒子
     for x in range(number):
