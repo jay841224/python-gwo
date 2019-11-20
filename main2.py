@@ -125,6 +125,7 @@ def main():
         for y in x._A:
             file.write('{}\n'.format(y))
         file.close()
+    input()
 
 if __name__ == '__main__':
     main()
