@@ -46,7 +46,7 @@ def bad_fit(wolfs, wolf):
 def nice_fit(wolfs, wolf, iter_times):
     tempa = np.abs(np.random.random((1, 10)) * 2 * np.array([wolfs[0]._A]) - np.array([wolf._A]))
     tempb = np.abs(np.random.random((1, 10)) * 2 * np.array([wolfs[1]._A]) - np.array([wolf._A]))
-    tempc = np.abs(np.random.random((1, 10)) * 2 * np.array([wolfs[1]._A]) - np.array([wolf._A]))
+    tempc = np.abs(np.random.random((1, 10)) * 2 * np.array([wolfs[2]._A]) - np.array([wolf._A]))
 
     sa = 2 * (1 - (iter_times**2) / total_iter**2)
     ba = [sa * 2 * random.random() - sa for _ in range(3)]
@@ -94,7 +94,7 @@ def update(wolfs):
 
 
 def main():
-    number = 2
+    number = 3
     wolfs = []
     #讀取粒子
     for x in range(number):
@@ -113,9 +113,8 @@ def main():
     for x, count in zip(wolfs, range(len(wolfs))):
         with open('pbest{}.txt'.format(str(count)), 'w') as file:
             for xp in x._pbest:
-                file.write('{} '.format(xp))
-            file.write('\n')
-            file.write('{}'.format(x._pbestfit))
+                file.write('{}\n'.format(xp))
+            file.write('{}\n'.format(x._pbestfit))
     
     wolfs = update(wolfs)
     
@@ -125,7 +124,7 @@ def main():
         for y in x._A:
             file.write('{}\n'.format(y))
         file.close()
-    input()
+
 
 if __name__ == '__main__':
     main()
