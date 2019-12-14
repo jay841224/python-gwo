@@ -1,13 +1,18 @@
-import initial, wolf
+from gwo_version2 import partical
 
 #get initial partical
 def main():
     #初始族群
     number = 30
-    wolfs = initial.ran_partical(number)
-    for x, count in zip(wolfs, range(len(wolfs))):
+    wolfs = []
+    for _ in range(number):
+        w = partical()
+        w.start()
+        wolfs.append(w)
+
+    for count, x in enumerate(wolfs):
         file = open('partical{}.txt'.format(str(count)), 'w+')
-        for y in x._A:
+        for y in x.A:
             file.write('{}\n'.format(y))
         file.close()
 
