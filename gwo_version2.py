@@ -38,7 +38,7 @@ class partical:
         for x, y in zip(self.A, length):
             y = float(y)
             tempfit += self.density * x * y
-        self.fits = tempfit + 1000 * (2 - u) + np.sqrt((25000 - strs)**2)
+        self.fits = tempfit + 1000 * (2 - u)**2 + np.sqrt((25000 - strs)**2)
 
     def get_pbest_and_pbestfit(self, count):
         if isfile('pbest0.txt'):
@@ -169,7 +169,7 @@ def main():
     wolfs = update(wolfs)
 
     for count, wolf in enumerate(wolfs):
-        wolf.write_new_partical_file
+        wolf.write_new_partical_file(count)
 
 if __name__ == '__main__':
     main()
