@@ -1,22 +1,22 @@
 import numpy as np
 from os.path import isfile
 import random
-total_iter = 100
+total_iter = 500
 
 class partical:
     def __init__(self, A=np.zeros((1, 10))):
         self.fits = 0
         self.A = A
         self.density = 0.1
-        self.D = A.shape[1]
+        self.D = A.shape[0]
 
         
         self.pbest = None
         self.pbest_fit = None
 
     def start(self):
-        wolf =[0.1 + np.random.random() * 25.9 for _ in range(self.D)]
-        self.A = np.array([wolf])
+        wolf = [0.1 + np.random.random() * 25.9 for _ in range(self.D)]
+        self.A = np.array(wolf)
 
     def get_fit(self, count):
         file_disp = open('DISP_{}.txt'.format(str(count)), 'r')
@@ -34,8 +34,10 @@ class partical:
             lines = file.readlines()
             for line in lines:
                 length.append(line)
-
+        
+        tempfit = 0
         for x, y in zip(self.A, length):
+            y = float(y)
             tempfit += self.density * x * y
         self.fits = tempfit + 1000 * (2 - u) + np.sqrt((25000 - strs)**2)
 
@@ -50,6 +52,9 @@ class partical:
                 else:
                     self.pbest_fit = lines[-1]
                     self.pbest = np.array(lines[: -1])
+        else:
+            self.pbest = self.A
+            self.pbest_fit = self.fits
 
     def write_best_file(self, count):
         with open('pbest{}.txt'.format(str(count)), 'w') as file:
@@ -67,15 +72,15 @@ class partical:
 
 def bad_fit(wolfs, wolf):
     a = [random.randint(0, len(wolfs) - 1) for _ in range(3)]
-    tempa = np.abs(np.random.random((1, 10)) * 2 * np.array([wolfs[a[0]]._A]) - np.array([wolf._A]))
-    tempb = np.abs(np.random.random((1, 10)) * 2 * np.array([wolfs[a[1]]._A]) - np.array([wolf._A]))
-    tempc = np.abs(np.random.random((1, 10)) * 2 * np.array([wolfs[a[2]]._A]) - np.array([wolf._A]))
+    tempa = np.abs(np.random.random((1, 10)) * 2 * [wolfs[a[0]].A] - [wolf.A])
+    tempb = np.abs(np.random.random((1, 10)) * 2 * [wolfs[a[1]].A] - [wolf.A])
+    tempc = np.abs(np.random.random((1, 10)) * 2 * [wolfs[a[2]].A] - [wolf.A])
     
     sa = 2
     ba = [sa * 2 * random.random() - sa for _ in range(3)]
-    tempa = np.array(wolfs[a[0]]._A - ba[0] * tempa)
-    tempb = np.array(wolfs[a[1]]._A - ba[1] * tempb)
-    tempc = np.array(wolfs[a[2]]._A - ba[2] * tempc)
+    tempa = wolfs[a[0]].A - ba[0] * tempa
+    tempb = wolfs[a[1]].A - ba[1] * tempb
+    tempc = wolfs[a[2]].A - ba[2] * tempc
 
     tempfinal = (tempa + tempb + tempc) / 3
     tempfinal = tempfinal.tolist()
@@ -84,19 +89,19 @@ def bad_fit(wolfs, wolf):
             tempfinal[0][n] = 0.1
         elif x > 26:
             tempfinal[0][n] = 26
-    return partical(tempfinal[0])
+    return partical(np.array(tempfinal[0]))
     #partical
     
 def nice_fit(wolfs, wolf, iter_times):
-    tempa = np.abs(np.random.random((1, 10)) * 2 * np.array([wolfs[0]._A]) - np.array([wolf._A]))
-    tempb = np.abs(np.random.random((1, 10)) * 2 * np.array([wolfs[1]._A]) - np.array([wolf._A]))
-    tempc = np.abs(np.random.random((1, 10)) * 2 * np.array([wolfs[2]._A]) - np.array([wolf._A]))
+    tempa = np.abs(np.random.random((1, 10)) * 2 * [wolfs[0].A] - [wolf.A])
+    tempb = np.abs(np.random.random((1, 10)) * 2 * [wolfs[1].A] - [wolf.A])
+    tempc = np.abs(np.random.random((1, 10)) * 2 * [wolfs[2].A] - [wolf.A])
 
     sa = 2 * (1 - (iter_times**2) / total_iter**2)
     ba = [sa * 2 * random.random() - sa for _ in range(3)]
-    tempa = np.array(wolfs[0]._A - ba[0] * tempa)
-    tempb = np.array(wolfs[1]._A - ba[1] * tempb)
-    tempc = np.array(wolfs[2]._A - ba[2] * tempc)
+    tempa = wolfs[0].A - ba[0] * tempa
+    tempb = wolfs[1].A - ba[1] * tempb
+    tempc = wolfs[2].A - ba[2] * tempc
 
     tempfinal = (1.5 * tempa + 1.3*tempb + tempc)/(1.5 + 1.3 + 1)# + 0.3 * np.random.random((1, 10)) * np.array(wolf._pbest)
     tempfinal = tempfinal.tolist()
@@ -105,7 +110,7 @@ def nice_fit(wolfs, wolf, iter_times):
             tempfinal[0][n] = 0.1
         elif x > 26:
             tempfinal[0][n] = 26
-    return partical(tempfinal[0])
+    return partical(np.array(tempfinal[0]))
     #partical
 
 def update(wolfs):
@@ -120,12 +125,14 @@ def update(wolfs):
         with open('iter_times.txt', 'w') as file:
             file.write(str(iter_times))
     temp_wolfs = wolfs[0: 3]
+    #temp_wolfs = []
     total_fit = 0
     for w in wolfs:
-        total_fit += w._fit
+        total_fit += w.fits
     average_fit = total_fit / len(wolfs)
     for w in wolfs[3: ]:
-        if w._fit > average_fit:
+    #for w in wolfs:
+        if w.fits > average_fit:
             temp_wolf = bad_fit(wolfs, w)
             
         else:
@@ -153,7 +160,7 @@ def main():
     
     for count, wolf in enumerate(wolfs):
         wolf.get_fit(count)#calculate fit
-        wolf.get_pbest_and_pbestfit
+        wolf.get_pbest_and_pbestfit(count)
 
     wolfs.sort(key=getkey) #sort by fit from small to big
 
@@ -164,3 +171,6 @@ def main():
 
     for count, wolf in enumerate(wolfs):
         wolf.write_new_partical_file
+
+if __name__ == '__main__':
+    main()
