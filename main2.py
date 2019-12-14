@@ -3,7 +3,7 @@ from os.path import isfile
 import random
 import numpy as np
 import math
-total_iter = 100
+total_iter = 1000
 def get_key(w):
     return (w._fit)
 def import_files(wolfs):
@@ -52,7 +52,7 @@ def nice_fit(wolfs, wolf, iter_times):
     ba = [sa * 2 * random.random() - sa for _ in range(3)]
     tempa = np.array(wolfs[0]._A - ba[0] * tempa)
     tempb = np.array(wolfs[1]._A - ba[1] * tempb)
-    tempc = np.array(wolfs[1]._A - ba[2] * tempc)
+    tempc = np.array(wolfs[2]._A - ba[2] * tempc)
 
     tempfinal = (1.5 * tempa + 1.3*tempb + tempc)/(1.5 + 1.3 + 1) + 0.3 * np.random.random((1, 10)) * np.array(wolf._pbest)
     tempfinal = tempfinal.tolist()
@@ -75,12 +75,12 @@ def update(wolfs):
             iter_times = int(file.read()) + 1
         with open('iter_times.txt', 'w') as file:
             file.write(str(iter_times))
-    temp_wolfs = []
+    temp_wolfs = wolfs[0: 3]
     total_fit = 0
     for w in wolfs:
         total_fit += w._fit
     average_fit = total_fit / len(wolfs)
-    for w in wolfs:
+    for w in wolfs[3: ]:
         if w._fit > average_fit:
             temp_wolf = bad_fit(wolfs, w)
             
@@ -94,7 +94,7 @@ def update(wolfs):
 
 
 def main():
-    number = 3
+    number = 30
     wolfs = []
     #讀取粒子
     for x in range(number):
