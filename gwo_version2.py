@@ -1,21 +1,20 @@
 import numpy as np
 from os.path import isfile
 import random
-total_iter = 500
+total_iter = 100
 
 class partical:
     def __init__(self, A=np.zeros((1, 10))):
         self.fits = 0
         self.A = A
         self.density = 0.1
-        self.D = A.shape[0]
 
         
         self.pbest = None
         self.pbest_fit = None
 
     def start(self):
-        wolf = [0.1 + np.random.random() * 25.9 for _ in range(self.D)]
+        wolf = [0.1 + np.random.random() * 25.9 for _ in range(10)]
         self.A = np.array(wolf)
 
     def get_fit(self, count):
